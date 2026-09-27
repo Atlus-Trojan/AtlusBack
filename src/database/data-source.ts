@@ -1,12 +1,23 @@
 import 'dotenv/config';
+import { join } from 'node:path';
 import { DataSource } from 'typeorm';
+import { DATABASE_ENTITIES } from './entities';
 
-export const AppDataSource = new DataSource({
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error('Invalid or missing DATABASE_URL');
+}
+
+const appDataSource = new DataSource({
   type: 'postgres',
-  url: process.env.DATABASE_URL,
+  url: databaseUrl,
   uuidExtension: 'pgcrypto',
-  entities: ['src/**/*.entity{.ts,.js}'],
-  migrations: ['src/database/migrations/*{.ts,.js}'],
+  entities: DATABASE_ENTITIES,
+  migrations: [join(__dirname, 'migrations', '*{.ts,.js}')],
+  migrationsTableName: 'migrations',
+  migrationsTransactionMode: 'all',
   synchronize: false,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
+
+export default appDataSource;

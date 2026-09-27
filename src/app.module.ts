@@ -7,6 +7,12 @@ import { HealthModule } from './health/health.module';
 import { DatabaseModule } from './database/database.module';
 import { DiretoriasModule } from './diretorias/diretorias.module';
 import { envValidationSchema } from './config/env.validation';
+import { DATABASE_ENTITIES } from './database/entities';
+import { DiretoriasModule } from './modules/diretorias/diretorias.module';
+import { EventosModule } from './modules/eventos/eventos.module';
+import { LojaModule } from './modules/loja/loja.module';
+import { SociosModule } from './modules/socios/socios.module';
+import { UsuariosModule } from './modules/usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -21,16 +27,16 @@ import { envValidationSchema } from './config/env.validation';
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
         uuidExtension: 'pgcrypto',
-        autoLoadEntities: true,
+        entities: DATABASE_ENTITIES,
         synchronize: false,
-        retryAttempts: 0,
-        ssl:
-          config.get<string>('NODE_ENV') === 'production'
-            ? { rejectUnauthorized: false }
-            : false,
+        migrationsRun: false,
       }),
     }),
-    DatabaseModule,
+    DiretoriasModule,
+    UsuariosModule,
+    SociosModule,
+    LojaModule,
+    EventosModule,
     HealthModule,
     DiretoriasModule,
   ],
