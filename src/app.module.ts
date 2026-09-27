@@ -4,15 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './health/health.module';
-import { DatabaseModule } from './database/database.module';
-import { DiretoriasModule } from './diretorias/diretorias.module';
 import { envValidationSchema } from './config/env.validation';
 import { DATABASE_ENTITIES } from './database/entities';
-import { DiretoriasModule } from './modules/diretorias/diretorias.module';
 import { EventosModule } from './modules/eventos/eventos.module';
 import { LojaModule } from './modules/loja/loja.module';
 import { SociosModule } from './modules/socios/socios.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
+import { DiretoriasModule } from './modules/diretorias/diretorias.module';
 
 @Module({
   imports: [
@@ -38,7 +36,6 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
     LojaModule,
     EventosModule,
     HealthModule,
-    DiretoriasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
