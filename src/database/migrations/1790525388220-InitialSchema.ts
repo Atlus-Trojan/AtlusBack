@@ -6,6 +6,10 @@ export class InitialSchema1790525388220 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Extensões do PostgreSQL
     await queryRunner.query(`
+      CREATE EXTENSION IF NOT EXISTS "pgcrypto"
+    `);
+
+    await queryRunner.query(`
       CREATE EXTENSION IF NOT EXISTS "citext"
     `);
 
