@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './health/health.module';
 import { DatabaseModule } from './database/database.module';
+import { DiretoriasModule } from './diretorias/diretorias.module';
 import { envValidationSchema } from './config/env.validation';
 
 @Module({
@@ -19,6 +20,7 @@ import { envValidationSchema } from './config/env.validation';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
+        uuidExtension: 'pgcrypto',
         autoLoadEntities: true,
         synchronize: false,
         retryAttempts: 0,
@@ -30,6 +32,7 @@ import { envValidationSchema } from './config/env.validation';
     }),
     DatabaseModule,
     HealthModule,
+    DiretoriasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
