@@ -5,6 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './health/health.module';
 import { envValidationSchema } from './config/env.validation';
+import { DATABASE_ENTITIES } from './database/entities';
+import { DiretoriasModule } from './modules/diretorias/diretorias.module';
+import { EventosModule } from './modules/eventos/eventos.module';
+import { LojaModule } from './modules/loja/loja.module';
+import { SociosModule } from './modules/socios/socios.module';
+import { UsuariosModule } from './modules/usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -17,10 +23,17 @@ import { envValidationSchema } from './config/env.validation';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         url: config.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
+        uuidExtension: 'pgcrypto',
+        entities: DATABASE_ENTITIES,
         synchronize: false,
+        migrationsRun: false,
       }),
     }),
+    DiretoriasModule,
+    UsuariosModule,
+    SociosModule,
+    LojaModule,
+    EventosModule,
     HealthModule,
   ],
   controllers: [AppController],
