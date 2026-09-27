@@ -5,7 +5,13 @@ services:
       - '3000:3000'
     environment:
       PORT: 3000
-      DATABASE_URL: postgres://atlus:atlus@db:5432/atlus
+      NODE_ENV: development
+      LOG_LEVEL: log
+      DATABASE_URL: postgres://atlus:Atlus%40456@db:5432/atlus
+      JWT_SECRET: local-dev-secret-change-me-32chars
+      JWT_EXPIRATION: 1d
+      CPF_ENCRYPTION_KEY: '00000000000000000000000000000000'
+      EMAIL_OTP_PROVIDER_KEY: local-dev-otp-provider-key
     depends_on:
       db:
         condition: service_healthy
@@ -16,7 +22,7 @@ services:
       - '127.0.0.1:5433:5432'
     environment:
       POSTGRES_USER: atlus
-      POSTGRES_PASSWORD: atlus
+      POSTGRES_PASSWORD: Atlus@456
       POSTGRES_DB: atlus
     volumes:
       - db_data:/var/lib/postgresql/data

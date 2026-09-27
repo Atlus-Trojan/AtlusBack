@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HealthModule } from './health/health.module';
+import { DatabaseModule } from './database/database.module';
+import { DiretoriasModule } from './diretorias/diretorias.module';
 import { envValidationSchema } from './config/env.validation';
 import { DATABASE_ENTITIES } from './database/entities';
 import { DiretoriasModule } from './modules/diretorias/diretorias.module';
@@ -17,6 +19,7 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: envValidationSchema,
+      validationOptions: { abortEarly: false },
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -35,6 +38,7 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
     LojaModule,
     EventosModule,
     HealthModule,
+    DiretoriasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
