@@ -17,6 +17,7 @@ export const envValidationSchema = Joi.object({
     'string.empty': 'Invalid or missing DATABASE_URL',
     'string.uri': 'Invalid or missing DATABASE_URL',
   }),
+  FRONTEND_URL: Joi.string().uri().default('http://localhost:5173'),
   JWT_SECRET: Joi.string().min(32).required().messages({
     'any.required': 'JWT_SECRET is required',
     'string.empty': 'JWT_SECRET is required',
