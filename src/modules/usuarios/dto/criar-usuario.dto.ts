@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, ValidateIf } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  IsEnum,
+  ValidateIf,
+} from 'class-validator';
 import { TipoVinculo } from '../enums/tipo-vinculo.enum';
 
 export class CriarUsuarioDto {
@@ -7,7 +14,9 @@ export class CriarUsuarioDto {
   tipoVinculo!: TipoVinculo;
 
   // Garante que o CPF seja exigido para não-estudantes
-  @ValidateIf((o: CriarUsuarioDto) => o.tipoVinculo === TipoVinculo.NAO_ESTUDANTE)
+  @ValidateIf(
+    (o: CriarUsuarioDto) => o.tipoVinculo === TipoVinculo.NAO_ESTUDANTE,
+  )
   @IsNotEmpty({ message: 'Campo obrigatório ausente' })
   @IsString()
   cpf?: string;

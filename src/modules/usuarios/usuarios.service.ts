@@ -1,4 +1,5 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { DocumentoDuplicadoException } from '../../common/exceptions/documento-duplicado.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -14,14 +15,16 @@ export class UsuariosService {
     private readonly usuarioRepository: Repository<Usuario>,
   ) {}
 
-  // Remove o retorno Promise<Usuario> para não prometer a Entidade bruta
-  async criarUsuarioBase(criarUsuarioDto: CriarUsuarioDto) {
-    const { email, senha, nome, tipoVinculo, termoVersao, rga, cpf } = criarUsuarioDto;
+  async criarUsuarioBase(criarUsuarioDto: CriarUsuarioDto): Promise<Usuario> {
+    const { email, senha, nome, tipoVinculo, termoVersao, rga, cpf } =
+      criarUsuarioDto;
 
     // 1. Auditoria de E-mail
-    const usuarioExistente = await this.usuarioRepository.findOne({ where: { email } });
+    const usuarioExistente = await this.usuarioRepository.findOne({
+      where: { email },
+    });
     if (usuarioExistente) {
-      throw new ConflictException('Email já cadastrado');
+      throw new DocumentoDuplicadoException('Email já cadastrado');
     }
 
     let cpfHash: string | null = null;
@@ -29,15 +32,20 @@ export class UsuariosService {
 
     // 2. Processamento de Documentos e Validação de Duplicidade
     if (tipoVinculo === TipoVinculo.ESTUDANTE && rga) {
-      const rgaExistente = await this.usuarioRepository.findOne({ where: { rga } });
-      if (rgaExistente) throw new ConflictException('RGA já cadastrado');
-    } 
-    else if (tipoVinculo === TipoVinculo.NAO_ESTUDANTE && cpf) {
+      const rgaExistente = await this.usuarioRepository.findOne({
+        where: { rga },
+      });
+      if (rgaExistente)
+        throw new DocumentoDuplicadoException('RGA já cadastrado');
+    } else if (tipoVinculo === TipoVinculo.NAO_ESTUDANTE && cpf) {
       // O banco exige char(64) para a unicidade do CPF
       cpfHash = crypto.createHash('sha256').update(cpf).digest('hex');
-      
-      const cpfExistente = await this.usuarioRepository.findOne({ where: { cpfHash } });
-      if (cpfExistente) throw new ConflictException('CPF já cadastrado');
+
+      const cpfExistente = await this.usuarioRepository.findOne({
+        where: { cpfHash },
+      });
+      if (cpfExistente)
+        throw new DocumentoDuplicadoException('CPF já cadastrado');
 
       // (Stub temporário): A cifra AES-256 real exigirá uma chave no .env futuro.
       // Uso de Buffer para satisfazer a constraint NOT NULL do banco.
@@ -60,12 +68,7 @@ export class UsuariosService {
       consentimentoEm: new Date(),
     });
 
-    // 5. Persistência
-    const usuarioSalvo = await this.usuarioRepository.save(novoUsuario);
-
-    // 6. Blindagem de Saída (Exclui dados sensíveis antes de retornar)
-    const { senhaHash: _, cpfCifrado: __, ...usuarioLimpo } = usuarioSalvo;
-    
-    return usuarioLimpo;
+    // 5. Persistência — a blindagem de saída é responsabilidade do Controller
+    return this.usuarioRepository.save(novoUsuario);
   }
 }

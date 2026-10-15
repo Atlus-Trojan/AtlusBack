@@ -8,7 +8,7 @@ import { UsuariosService } from './usuarios.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Usuario, UsuarioDiretoria])],
   controllers: [UsuariosController], // Liberta a rota /usuarios
-  providers: [UsuariosService],      // Ativa a lógica de negócio
+  providers: [UsuariosService], // Ativa a lógica de negócio
   exports: [TypeOrmModule, UsuariosService],
 })
 export class UsuariosModule {}

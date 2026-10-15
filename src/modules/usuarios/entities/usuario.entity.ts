@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { TipoVinculo } from '../enums/tipo-vinculo.enum';
 import { Participacao } from '../../eventos/entities/participacao.entity';
 import { Pedido } from '../../loja/entities/pedido.entity';
@@ -42,6 +43,7 @@ export class Usuario {
   @Column({ type: 'varchar', length: 20, nullable: true })
   rga: string | null;
 
+  @Exclude()
   @Column({
     name: 'cpf_hash',
     type: 'char',
@@ -50,6 +52,7 @@ export class Usuario {
   })
   cpfHash: string | null;
 
+  @Exclude()
   @Column({ name: 'cpf_cifrado', type: 'bytea', nullable: true })
   cpfCifrado: Buffer | null;
 
@@ -59,6 +62,7 @@ export class Usuario {
   @Column({ name: 'email_verificado_em', type: 'timestamptz', nullable: true })
   emailVerificadoEm: Date | null;
 
+  @Exclude()
   @Column({ name: 'senha_hash', type: 'varchar', length: 72 })
   senhaHash: string;
 
